@@ -6,7 +6,15 @@ import matchImage from "@/assets/images/match.png";
 
 export const playerData = {
   name: "Victor Crosetto",
+  firstName: "Victor",
+  lastName: "Crosetto",
   taglines: ["12-Year-Old Junior Tennis Player", "Future of Tennis in the Making"],
+  ticker: ["TENNIS EUROPE U14", "MILAN", "2026", "ITF JUNIOR CIRCUIT", "TARGET 2027", "RANKING WATCH", "Q2 2026"],
+  heroStats: [
+    { label: "AGE", value: "12" },
+    { label: "WEEKLY", value: "24h" },
+    { label: "DIVISION", value: "U14" }
+  ],
   stats: [
     { label: "Age", value: "12" },
     { label: "Status", value: "Junior Player" },
@@ -14,6 +22,7 @@ export const playerData = {
   ],
   about: {
     story: "The Story Behind the Player",
+    quote: "Discipline is doing what you hate to do, but doing it like you love it.",
     description: "Victor's journey is defined by a discipline rarely seen in athletes his age. While others are playing, he is building. Every hour on the court is deliberate, focused, and oriented toward a singular, long-term vision. He doesn't just want to compete; he wants to dominate on the international stage. His approach combines rigorous physical conditioning with elite technical instruction and a mature mental game.",
     cards: [
       { title: "Discipline", description: "First on the court, last to leave. Training with the intensity of a seasoned professional." },
@@ -54,21 +63,22 @@ export const playerData = {
   ],
   vision: {
     title: "The Road Ahead",
+    quote: "Building the foundation today for the international stages of tomorrow.",
     description: "He is building step by step toward international competition, stronger tournament results, and long-term professional development.",
     goals: [
       { title: "International Tournaments", description: "Transitioning to the Tennis Europe and ITF Junior circuits to gain international experience." },
       { title: "Strong Junior Ranking", description: "Establishing a dominant position within the national and European junior rankings." },
-      { title: "Long-Term Professional Pathway", description: "Laying the physical, technical, and mental foundations for a transition to the ATP tour." }
+      { title: "Long-Term Pathway", description: "Laying the physical, technical, and mental foundations for a transition to the ATP tour." }
     ]
   },
   partners: {
-    title: "Partners & Support",
+    title: "Partnerships",
     description: "Open to meaningful partnerships that support long-term athletic development.",
     cards: [
-      { title: "Equipment Support", description: "Apparel, racquets, and technical gear to optimize daily performance." },
-      { title: "Tournament Travel Support", description: "Facilitating participation in crucial international ranking events." },
-      { title: "Training Development", description: "Resources for specialized coaching, sports psychology, and elite physical therapy." },
-      { title: "Brand Collaboration", description: "Aligning with premium brands that share a commitment to excellence and high performance." }
+      { category: "Equipment", title: "Technical Gear", description: "Apparel, racquets, and technical gear to optimize daily performance." },
+      { category: "Travel", title: "Tournament Support", description: "Facilitating participation in crucial international ranking events." },
+      { category: "Development", title: "Training Resources", description: "Resources for specialized coaching, sports psychology, and elite physical therapy." },
+      { category: "Synergy", title: "Brand Alignment", description: "Aligning with premium brands that share a commitment to excellence and high performance." }
     ]
   },
   contact: {
@@ -78,6 +88,7 @@ export const playerData = {
     location: "Milan, Italy"
   },
   images: {
-    hero: heroImage
+    hero: heroImage,
+    profile: matchImage
   }
 };

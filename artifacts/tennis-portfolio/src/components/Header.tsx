@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { playerData } from "@/data/playerData";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,10 +13,12 @@ export function Header() {
   });
 
   const links = [
-    { label: "Story", href: "#about" },
     { label: "Profile", href: "#profile" },
+    { label: "Story", href: "#about" },
+    { label: "Training", href: "#training" },
     { label: "Gallery", href: "#gallery" },
     { label: "Vision", href: "#vision" },
+    { label: "Partners", href: "#partners" },
     { label: "Contact", href: "#contact" }
   ];
 
@@ -30,57 +32,73 @@ export function Header() {
   };
 
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/80 backdrop-blur-md border-b border-white/5 py-4" : "bg-transparent py-6"
-      }`}
-    >
-      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-        <a 
-          href="#top" 
-          onClick={(e) => scrollTo(e, "#top")}
-          className="text-xl font-display font-bold tracking-widest text-white uppercase"
-        >
-          V. Crosetto
-        </a>
-
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
-            <a 
-              key={link.label}
-              href={link.href}
-              onClick={(e) => scrollTo(e, link.href)}
-              className="text-sm font-medium text-muted-foreground hover:text-white transition-colors uppercase tracking-widest"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        {/* Mobile Toggle */}
-        <button 
-          className="md:hidden text-white p-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+    <header className="fixed top-0 left-0 right-0 z-50">
+      {/* Broadcast Ticker */}
+      <div className="bg-primary text-black py-1 overflow-hidden">
+        <div className="whitespace-nowrap flex">
+          <div className="animate-marquee inline-block font-mono text-[10px] uppercase tracking-[0.2em] font-bold">
+            {playerData.ticker.join("  ·  ")}  ·  {playerData.ticker.join("  ·  ")}  ·  {playerData.ticker.join("  ·  ")}  ·  {playerData.ticker.join("  ·  ")}
+          </div>
+        </div>
       </div>
 
-      {/* Mobile Nav */}
+      <div 
+        className={`transition-all duration-500 ${
+          isScrolled ? "bg-background/90 backdrop-blur-md border-b border-white/5 py-4" : "bg-transparent py-6"
+        }`}
+      >
+        <div className="container mx-auto px-6 md:px-8 flex items-center justify-between">
+          <a 
+            href="#top" 
+            onClick={(e) => scrollTo(e, "#top")}
+            className="text-lg md:text-xl font-display font-extrabold tracking-tight text-white uppercase"
+          >
+            {playerData.name}
+          </a>
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-8">
+            {links.map((link) => (
+              <a 
+                key={link.label}
+                href={link.href}
+                onClick={(e) => scrollTo(e, link.href)}
+                className="text-xs font-mono text-white/50 hover:text-white transition-colors uppercase tracking-widest relative group"
+              >
+                {link.label}
+                <span className="absolute -bottom-2 left-0 w-0 h-px bg-white transition-all group-hover:w-full" />
+              </a>
+            ))}
+          </nav>
+
+          {/* Mobile Toggle */}
+          <button 
+            className="md:hidden text-white p-2 relative z-[60]"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Nav Overlay */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-white/5 p-4 flex flex-col gap-4">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed inset-0 bg-background z-50 flex flex-col items-center justify-center gap-8"
+        >
           {links.map((link) => (
             <a 
               key={link.label}
               href={link.href}
               onClick={(e) => scrollTo(e, link.href)}
-              className="text-sm font-medium text-muted-foreground hover:text-white p-2 uppercase tracking-widest block"
+              className="text-2xl font-display font-bold text-white uppercase tracking-widest"
             >
               {link.label}
             </a>
           ))}
-        </div>
+        </motion.div>
       )}
     </header>
   );

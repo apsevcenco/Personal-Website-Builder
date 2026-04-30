@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap');
 
 @theme inline {
   --color-background: hsl(var(--background));
@@ -45,6 +45,7 @@
   --font-serif: var(--app-font-serif);
   --font-mono: var(--app-font-mono);
   --font-display: var(--app-font-display);
+  --font-bebas: var(--app-font-bebas);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -59,14 +60,14 @@
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
 
-  /* Deep near-black background #0a0a0a */
-  --background: 0 0% 4%;
+  /* Deep near-black background #050505 */
+  --background: 0 0% 2%;
   /* Off-white foreground #f4f4f5 */
   --foreground: 240 5% 96%;
 
   --border: 0 0% 15%;
 
-  --card: 0 0% 7%;
+  --card: 0 0% 5%;
   --card-foreground: 240 5% 96%;
   --card-border: 0 0% 15%;
 
@@ -78,7 +79,7 @@
   --primary: 220 100% 50%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 0 0% 12%;
+  --secondary: 0 0% 8%;
   --secondary-foreground: 240 5% 96%;
 
   --muted: 0 0% 12%;
@@ -95,6 +96,8 @@
 
   --app-font-sans: 'DM Sans', sans-serif;
   --app-font-display: 'Montserrat', sans-serif;
+  --app-font-mono: 'JetBrains Mono', monospace;
+  --app-font-bebas: 'Bebas Neue', sans-serif;
   
   --radius: 0.5rem;
 
@@ -123,8 +126,21 @@
   }
 }
 
+.film-grain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
 .glass-panel {
-  background: rgba(20, 20, 20, 0.6);
+  background: rgba(10, 10, 10, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -132,4 +148,22 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+@keyframes ken-burns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+
+.animate-ken-burns {
+  animation: ken-burns 20s infinite alternate ease-in-out;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }

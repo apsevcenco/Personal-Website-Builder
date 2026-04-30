@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
 import { playerData } from "@/data/playerData";
 import { Button } from "@/components/ui/button";
 
@@ -12,87 +11,113 @@ export function Hero() {
   };
 
   return (
-    <section id="top" className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
+    <section id="top" className="relative min-h-[100dvh] flex flex-col justify-end pb-24 md:pb-32 overflow-hidden">
       {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background z-10" />
-        <div className="absolute inset-0 bg-black/40 z-10" />
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background z-10" />
+        <div className="absolute inset-0 bg-black/30 z-10" />
         <img 
           src={playerData.images.hero} 
-          alt="Victor Crosetto Hero" 
-          className="w-full h-full object-cover object-center scale-105"
+          alt="Victor Crosetto" 
+          className="w-full h-full object-cover object-top md:object-center animate-ken-burns scale-100 origin-center"
         />
       </div>
 
-      <div className="container relative z-20 px-4 md:px-6 pt-20">
-        <div className="max-w-4xl">
+      <div className="container relative z-20 px-6 md:px-8 pt-32">
+        <div className="w-full">
+          {/* Chapter Mark */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-wrap gap-3 mb-6"
+            className="flex justify-between items-end border-b border-white/20 pb-4 mb-6"
           >
-            {playerData.stats.map((stat, i) => (
-              <span key={i} className="px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white border border-white/20 glass-panel rounded-full">
-                {stat.value}
+            <span className="font-mono text-xs uppercase tracking-widest text-white/50">
+              N° 01 — PLAYER PROFILE
+            </span>
+            <span className="font-mono text-xs uppercase tracking-widest text-white/50">
+              EDITION 2026
+            </span>
+          </motion.div>
+
+          {/* Huge Name Reveal */}
+          <h1 className="font-display font-extrabold uppercase leading-[0.85] tracking-tighter text-white mb-6 md:mb-8" style={{ fontSize: "clamp(4rem, 14vw, 12rem)" }}>
+            {playerData.name.split(' ').map((word, i) => (
+              <span key={i} className="block overflow-hidden pb-2 md:pb-4 -mb-2 md:-mb-4">
+                <motion.span
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 + (i * 0.1), ease: [0.16, 1, 0.3, 1] }}
+                  className="block"
+                >
+                  {word}
+                </motion.span>
               </span>
             ))}
-          </motion.div>
-
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-6xl md:text-8xl lg:text-9xl font-display font-extrabold tracking-tighter text-white uppercase leading-none mb-6"
-          >
-            {playerData.name.split(' ').map((word, i) => (
-              <span key={i} className="block">{word}</span>
-            ))}
-          </motion.h1>
+          </h1>
           
-          <motion.p 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-xl md:text-2xl text-gray-300 font-sans max-w-2xl mb-10"
-          >
-            {playerData.taglines[0]} <span className="text-primary">—</span> {playerData.taglines[1]}
-          </motion.p>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-end">
+            <div className="md:col-span-7 lg:col-span-6 space-y-4">
+              {/* Tagline Stack */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+              >
+                <div className="font-mono text-xs md:text-sm uppercase tracking-widest text-white/60 mb-2">
+                  JUNIOR · CLASS OF 2028
+                </div>
+                <p className="text-2xl md:text-3xl text-white font-sans font-medium tracking-tight">
+                  {playerData.taglines[1]}
+                </p>
+              </motion.div>
+            </div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-wrap gap-4"
-          >
-            <Button 
-              size="lg" 
-              className="rounded-none bg-white text-black hover:bg-white/90 font-bold uppercase tracking-widest h-14 px-8"
-              onClick={() => scrollTo("#profile")}
-            >
-              View Profile
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="rounded-none border-white/20 text-white hover:bg-white/10 glass-panel font-bold uppercase tracking-widest h-14 px-8"
-              onClick={() => scrollTo("#vision")}
-            >
-              Follow the Journey
-            </Button>
-          </motion.div>
+            <div className="md:col-span-5 lg:col-span-6 flex flex-col md:items-end justify-end">
+              {/* Stat Row */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1 }}
+                className="flex items-end gap-8 md:gap-12"
+              >
+                {playerData.heroStats.map((stat, i) => (
+                  <div key={i} className="flex flex-col relative">
+                    {i !== 0 && (
+                      <div className="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 w-px h-8 bg-white/20" />
+                    )}
+                    <span className="font-bebas text-4xl md:text-5xl lg:text-6xl leading-none tracking-normal text-white">
+                      {stat.value}
+                    </span>
+                    <span className="font-mono text-[10px] md:text-xs uppercase tracking-widest text-white/50 mt-1">
+                      {stat.label}
+                    </span>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* Elegant Scroll Indicator */}
       <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: "auto" }}
         transition={{ delay: 1.5, duration: 1 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 cursor-pointer"
-        onClick={() => scrollTo("#about")}
+        className="absolute bottom-0 right-6 md:right-12 z-20 flex flex-col items-center gap-4 cursor-pointer pb-8"
+        onClick={() => scrollTo("#profile")}
       >
-        <span className="text-xs uppercase tracking-widest text-white/50">Scroll</span>
-        <ChevronDown className="text-white/50 animate-bounce" size={20} />
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40" style={{ writingMode: 'vertical-rl' }}>
+          SCROLL
+        </span>
+        <div className="w-px h-16 bg-white/20 relative overflow-hidden">
+          <motion.div 
+            className="absolute top-0 left-0 right-0 h-1/2 bg-white"
+            animate={{ top: ["-50%", "100%"] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          />
+        </div>
       </motion.div>
     </section>
   );

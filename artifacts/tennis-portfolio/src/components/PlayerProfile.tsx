@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { SectionTitle } from "./SectionTitle";
 import { playerData } from "@/data/playerData";
-import { Card } from "@/components/ui/card";
 
 export function PlayerProfile() {
   const profileItems = [
@@ -16,49 +15,65 @@ export function PlayerProfile() {
   ];
 
   return (
-    <section id="profile" className="py-24 md:py-32 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-5">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="tennis-grid" width="100" height="100" patternUnits="userSpaceOnUse">
-              <path d="M 100 0 L 0 0 0 100" fill="none" stroke="white" strokeWidth="1"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#tennis-grid)" />
-        </svg>
-      </div>
-
-      <div className="container relative z-10 px-4 md:px-6">
-        <div className="flex flex-col lg:flex-row gap-12 items-center">
-          <div className="lg:w-1/3">
-            <SectionTitle title="Player Profile" className="mb-8" />
-            <p className="text-muted-foreground text-lg mb-8">
-              A comprehensive look at the foundation and physical attributes driving Victor's game forward.
-            </p>
-          </div>
+    <section id="profile" className="py-24 md:py-32 bg-background relative overflow-hidden">
+      <div className="container px-6 md:px-8">
+        <SectionTitle number="N° 04 — THE ATHLETE" title="Player Profile" className="mb-16" />
+        
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-0">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="lg:w-5/12 aspect-[3/4] relative overflow-hidden group"
+          >
+            <div className="absolute inset-0 bg-black/20 z-10 transition-colors group-hover:bg-transparent" />
+            <img 
+              src={playerData.images.profile} 
+              alt="Victor Crosetto Profile" 
+              className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
+            />
+            <div className="absolute bottom-0 left-0 p-6 z-20">
+              <span className="font-mono text-xs uppercase tracking-widest text-white/70 bg-black/50 backdrop-blur-md px-3 py-1">
+                DATA SHEET // {new Date().getFullYear()}
+              </span>
+            </div>
+          </motion.div>
           
-          <div className="lg:w-2/3 w-full">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+          <div className="lg:w-7/12 border-l border-white/10 lg:pl-12 xl:pl-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-8">
+              {profileItems.map((item, i) => (
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className="flex flex-col border-b border-white/5 pb-4 group"
+                >
+                  <dt className="text-[10px] md:text-xs font-mono text-white/40 uppercase tracking-widest mb-2 transition-colors group-hover:text-primary">
+                    {item.label}
+                  </dt>
+                  <dd className="text-xl md:text-2xl font-display font-bold text-white uppercase tracking-tight">
+                    {item.value}
+                  </dd>
+                </motion.div>
+              ))}
+            </div>
+            
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              transition={{ delay: 0.8, duration: 1 }}
+              className="mt-12 pt-12 border-t border-white/10"
             >
-              <Card className="glass-panel border-white/10 rounded-none p-0 overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10">
-                  {profileItems.map((item, i) => (
-                    <div 
-                      key={i} 
-                      className={`p-6 md:p-8 flex flex-col justify-center ${
-                        i >= 2 ? "border-t border-white/10" : ""
-                      }`}
-                    >
-                      <dt className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-2">{item.label}</dt>
-                      <dd className="text-xl md:text-2xl font-display font-bold text-white">{item.value}</dd>
-                    </div>
-                  ))}
-                </div>
-              </Card>
+              <div className="flex items-center gap-4">
+                <div className="h-[1px] bg-primary w-12" />
+                <span className="font-mono text-xs uppercase tracking-widest text-white/50">
+                  VERIFIED STATS
+                </span>
+              </div>
             </motion.div>
           </div>
         </div>
