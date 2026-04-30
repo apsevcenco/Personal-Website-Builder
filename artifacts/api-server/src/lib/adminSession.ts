@@ -1,6 +1,12 @@
 import crypto from "crypto";
 
-const SECRET = process.env["SESSION_SECRET"] ?? "dev-insecure-secret";
+const RAW_SECRET = process.env["SESSION_SECRET"];
+if (!RAW_SECRET || RAW_SECRET.length < 16) {
+  throw new Error(
+    "SESSION_SECRET environment variable must be set to a strong random value (>= 16 characters). Refusing to start with an insecure default.",
+  );
+}
+const SECRET: string = RAW_SECRET;
 const COOKIE_NAME = "vc_admin";
 const TTL_MS = 1000 * 60 * 60 * 24 * 7;
 

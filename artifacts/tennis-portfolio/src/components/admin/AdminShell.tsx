@@ -1,4 +1,5 @@
 import { Link, useLocation } from "wouter";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { LogOut, ArrowUpRight } from "lucide-react";
 import { adminLogout } from "@/lib/api";
@@ -12,10 +13,14 @@ interface AdminShellProps {
 export function AdminShell({ children, onLoggedOut }: AdminShellProps) {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const handleLogout = async () => {
     try {
       await adminLogout();
+      queryClient.setQueryData(["admin", "me"], { authenticated: false });
+      queryClient.removeQueries({ queryKey: ["inquiries"] });
+      await queryClient.invalidateQueries({ queryKey: ["admin", "me"] });
       onLoggedOut?.();
       navigate("/admin");
       toast({ title: "Signed out" });
