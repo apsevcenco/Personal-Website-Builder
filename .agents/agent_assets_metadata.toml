@@ -1,0 +1,32 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "VQMKsJ6gZfksRKDbrrq2w"
+uri = "file://artifacts/tennis-portfolio/src/assets/images/hero.png"
+type = "image"
+title = "Cinematic tennis hero shot"
+
+[[generated]]
+id = "lLQ2b_hNbAfKXTHzd05Bk"
+uri = "file://artifacts/tennis-portfolio/src/assets/images/serve.png"
+type = "image"
+title = "Tennis serve practice"
+
+[[generated]]
+id = "V9LnY_HckDCdcoOhoO6gx"
+uri = "file://artifacts/tennis-portfolio/src/assets/images/footwork.png"
+type = "image"
+title = "Tennis footwork"
+
+[[generated]]
+id = "WZD9vpVaJIGP41ZxzZBEv"
+uri = "file://artifacts/tennis-portfolio/src/assets/images/training.png"
+type = "image"
+title = "Tennis training moment"
+
+[[generated]]
+id = "LO3J74222U1OYdvERmkiy"
+uri = "file://artifacts/tennis-portfolio/src/assets/images/match.png"
+type = "image"
+title = "Tennis match moment"
