@@ -1,29 +1,56 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SectionTitle } from "./SectionTitle";
-import { playerData } from "@/data/playerData";
+import { useContent } from "@/hooks/useContent";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, Check } from "lucide-react";
 
 export function Contact() {
+  const playerData = useContent();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const payload = {
+      name: String(formData.get("name") ?? ""),
+      email: String(formData.get("email") ?? ""),
+      message: String(formData.get("message") ?? ""),
+    };
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const res = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(data.error ?? "Failed to send inquiry");
+      }
       setSubmitted(true);
       toast({
         title: "Inquiry Sent",
         description: "Thank you for reaching out. We will be in touch shortly.",
       });
       form.reset();
-    }, 800);
+    } catch (err) {
+      toast({
+        title: "Could not send inquiry",
+        description: err instanceof Error ? err.message : "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  const instagramHandle = playerData.contact.instagram.replace(/^@/, "");
+  const instagramUrl = `https://instagram.com/${instagramHandle}`;
+  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(playerData.contact.location)}`;
 
   return (
     <section id="contact" className="py-24 md:py-32 bg-secondary/20 relative">
@@ -38,21 +65,34 @@ export function Contact() {
             <div className="flex flex-col gap-12 border-l border-white/10 pl-8">
               <div>
                 <p className="font-mono text-[10px] md:text-xs uppercase tracking-[0.2em] text-white/40 mb-2">Management</p>
-                <p className="text-lg font-sans text-white hover:text-primary transition-colors cursor-pointer inline-block">
+                <a
+                  href={`mailto:${playerData.contact.email}`}
+                  className="text-lg font-sans text-white hover:text-primary transition-colors inline-block"
+                >
                   {playerData.contact.email}
-                </p>
+                </a>
               </div>
               <div>
                 <p className="font-mono text-[10px] md:text-xs uppercase tracking-[0.2em] text-white/40 mb-2">Social</p>
-                <p className="text-lg font-sans text-white hover:text-primary transition-colors cursor-pointer inline-block">
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-lg font-sans text-white hover:text-primary transition-colors inline-block"
+                >
                   {playerData.contact.instagram}
-                </p>
+                </a>
               </div>
               <div>
                 <p className="font-mono text-[10px] md:text-xs uppercase tracking-[0.2em] text-white/40 mb-2">Base</p>
-                <p className="text-lg font-sans text-white">
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-lg font-sans text-white hover:text-primary transition-colors inline-block"
+                >
                   {playerData.contact.location}
-                </p>
+                </a>
               </div>
             </div>
           </div>
@@ -68,6 +108,7 @@ export function Contact() {
               <div className="relative group">
                 <input 
                   id="name" 
+                  name="name"
                   required 
                   className="w-full bg-transparent border-0 border-b border-white/20 pb-4 text-xl md:text-2xl font-sans text-white focus:ring-0 focus:outline-none focus:border-primary transition-colors peer placeholder:text-transparent" 
                   placeholder="Full Name"
@@ -80,6 +121,7 @@ export function Contact() {
               <div className="relative group">
                 <input 
                   id="email" 
+                  name="email"
                   type="email" 
                   required 
                   className="w-full bg-transparent border-0 border-b border-white/20 pb-4 text-xl md:text-2xl font-sans text-white focus:ring-0 focus:outline-none focus:border-primary transition-colors peer placeholder:text-transparent" 
@@ -93,6 +135,7 @@ export function Contact() {
               <div className="relative group mt-4">
                 <textarea 
                   id="message" 
+                  name="message"
                   required 
                   className="w-full bg-transparent border-0 border-b border-white/20 pb-4 text-xl md:text-2xl font-sans text-white focus:ring-0 focus:outline-none focus:border-primary transition-colors peer resize-y min-h-[100px] placeholder:text-transparent" 
                   placeholder="Message"

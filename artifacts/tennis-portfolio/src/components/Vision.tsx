@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { SectionTitle } from "./SectionTitle";
-import { playerData } from "@/data/playerData";
+import { useContent } from "@/hooks/useContent";
 
 export function Vision() {
+  const playerData = useContent();
   return (
     <section id="vision" className="py-24 md:py-32 bg-secondary/30 relative">
       <div className="container px-6 md:px-8">

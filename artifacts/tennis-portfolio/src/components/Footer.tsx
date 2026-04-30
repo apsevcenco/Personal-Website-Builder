@@ -1,6 +1,7 @@
-import { playerData } from "@/data/playerData";
+import { useContent } from "@/hooks/useContent";
 
 export function Footer() {
+  const playerData = useContent();
   const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const element = document.querySelector(href);
@@ -19,7 +20,7 @@ export function Footer() {
             <span className="font-mono text-xs uppercase tracking-widest text-white/50 mb-2">
               Management
             </span>
-            <a href="mailto:management@victorcrosetto.com" className="text-xl font-sans text-white hover:text-primary transition-colors">
+            <a href={`mailto:${playerData.contact.email}`} className="text-xl font-sans text-white hover:text-primary transition-colors">
               {playerData.contact.email}
             </a>
           </div>
@@ -47,9 +48,24 @@ export function Footer() {
       <div className="container px-6 md:px-8 mt-12 md:mt-24 relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-white/40 uppercase tracking-widest border-t border-white/10 pt-8">
           <p>&copy; {currentYear} {playerData.name}. ALL RIGHTS RESERVED.</p>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Instagram</a>
-            <a href="#" className="hover:text-white transition-colors">ITF Profile</a>
+          <div className="flex gap-6 items-center">
+            <a
+              href={`https://instagram.com/${playerData.contact.instagram.replace(/^@/, "")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors"
+            >
+              Instagram
+            </a>
+            <a
+              href={`mailto:${playerData.contact.email}`}
+              className="hover:text-white transition-colors"
+            >
+              Contact
+            </a>
+            <a href="/admin" className="hover:text-white transition-colors opacity-60">
+              Admin
+            </a>
           </div>
         </div>
       </div>

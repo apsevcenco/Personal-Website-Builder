@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { SectionTitle } from "./SectionTitle";
-import { playerData } from "@/data/playerData";
+import { useContent } from "@/hooks/useContent";
 import { ArrowRight } from "lucide-react";
 
 export function Partners() {
+  const playerData = useContent();
   const scrollTo = (href: string) => {
     const element = document.querySelector(href);
     if (element) {

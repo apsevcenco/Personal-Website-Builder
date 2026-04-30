@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { SectionTitle } from "./SectionTitle";
-import { playerData } from "@/data/playerData";
+import { useContent } from "@/hooks/useContent";
 
 export function About() {
+  const playerData = useContent();
   return (
     <section id="about" className="py-24 md:py-32 bg-background relative overflow-hidden">
       <div className="container px-6 md:px-8">

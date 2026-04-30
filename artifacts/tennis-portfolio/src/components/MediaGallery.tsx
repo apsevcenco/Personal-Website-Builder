@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { SectionTitle } from "./SectionTitle";
-import { playerData } from "@/data/playerData";
+import { useContent } from "@/hooks/useContent";
+import { defaultGalleryImages, resolveImageSrc } from "@/data/defaultContent";
 
 export function MediaGallery() {
+  const playerData = useContent();
   return (
     <section id="gallery" className="py-24 md:py-32 bg-background relative">
       <div className="container px-6 md:px-8">
@@ -45,7 +47,7 @@ export function MediaGallery() {
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-700 z-10" />
                 
                 <img 
-                  src={item.image} 
+                  src={resolveImageSrc(item.image, defaultGalleryImages[i] ?? defaultGalleryImages[0])} 
                   alt={item.alt}
                   className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105"
                 />

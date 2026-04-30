@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import { SectionTitle } from "./SectionTitle";
-import { playerData } from "@/data/playerData";
+import { useContent } from "@/hooks/useContent";
+import { defaultProfileImage, resolveImageSrc } from "@/data/defaultContent";
 
 export function PlayerProfile() {
+  const playerData = useContent();
+  const profileSrc = resolveImageSrc(playerData.images.profile, defaultProfileImage);
   const profileItems = [
     { label: "Age", value: playerData.profile.age },
     { label: "Country", value: playerData.profile.country },
@@ -29,8 +32,8 @@ export function PlayerProfile() {
           >
             <div className="absolute inset-0 bg-black/20 z-10 transition-colors group-hover:bg-transparent" />
             <img 
-              src={playerData.images.profile} 
-              alt="Victor Crosetto Profile" 
+              src={profileSrc} 
+              alt={`${playerData.name} Profile`} 
               className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
             />
             <div className="absolute bottom-0 left-0 p-6 z-20">

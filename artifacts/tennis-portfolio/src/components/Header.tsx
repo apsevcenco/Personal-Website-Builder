@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { playerData } from "@/data/playerData";
+import { useContent } from "@/hooks/useContent";
 
 export function Header() {
+  const playerData = useContent();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { scrollY } = useScroll();

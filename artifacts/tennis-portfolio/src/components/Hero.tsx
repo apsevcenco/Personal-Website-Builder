@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
-import { playerData } from "@/data/playerData";
+import { useContent } from "@/hooks/useContent";
 import { Button } from "@/components/ui/button";
+import { defaultHeroImage, resolveImageSrc } from "@/data/defaultContent";
 
 export function Hero() {
+  const playerData = useContent();
+  const heroSrc = resolveImageSrc(playerData.images.hero, defaultHeroImage);
   const scrollTo = (href: string) => {
     const element = document.querySelector(href);
     if (element) {
@@ -17,8 +20,8 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background z-10" />
         <div className="absolute inset-0 bg-black/30 z-10" />
         <img 
-          src={playerData.images.hero} 
-          alt="Victor Crosetto" 
+          src={heroSrc} 
+          alt={playerData.name} 
           className="w-full h-full object-cover object-top md:object-center animate-ken-burns scale-100 origin-center"
         />
       </div>
