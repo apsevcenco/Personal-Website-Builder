@@ -1,0 +1,191 @@
+Create a premium personal website for a 12-year-old talented junior tennis player.
+
+Goal:
+The website must present him as a disciplined, promising young athlete with serious future potential. The website should be attractive, modern, informative, and suitable to share with potential partners, clubs, academies, coaches, and sponsors. It must NOT look like a direct “please sponsor me” website. The tone must be professional, inspiring, and discreet.
+
+Tech stack:
+- React + Vite
+- TypeScript
+- Responsive design
+- Clean modern CSS
+- No backend required for the first version
+- Use placeholder content and images for now
+- Make it easy to replace texts, photos, videos, tournament results, and contact details later
+
+Style direction:
+Premium sports website.
+Inspired by Nike / ATP / professional athlete portfolio.
+Minimalistic, cinematic, elegant.
+Not childish, not cartoonish.
+
+Colors:
+- Main background: deep black / off-white sections
+- Text: white, black, soft gray
+- Accent color: tennis green or electric blue
+- Use strong contrast
+- Lots of spacing
+- Large typography
+- Smooth animations
+
+Fonts:
+Use Google Fonts:
+- Headings: Montserrat ExtraBold or Bebas Neue
+- Body: Inter or DM Sans
+
+Website structure:
+
+1. Hero Section
+- Full-screen cinematic hero
+- Dark overlay
+- Placeholder video/photo background
+- Player name placeholder: “Alex Ivanov”
+- Text:
+  “12-Year-Old Junior Tennis Player”
+  “Future of Tennis in the Making”
+- Buttons:
+  “View Profile”
+  “Follow the Journey”
+- Add small stat badges:
+  “Age 12”
+  “Junior Player”
+  “International Goals”
+
+2. About Section
+Title: “The Story Behind the Player”
+Content:
+Write elegant placeholder copy about a young tennis player who started early, trains with discipline, competes regularly, and is focused on long-term development.
+Include 3 personality cards:
+- Discipline
+- Focus
+- Competitive Spirit
+
+3. Achievements Section
+Title: “Achievements & Progress”
+Create cards for:
+- Tournament wins
+- Finalist results
+- Ranking progress
+- Training milestones
+Use placeholder data.
+Add a clean timeline layout.
+
+4. Player Profile Section
+Create a professional sports profile card:
+- Age
+- Country
+- Playing hand
+- Favorite surface
+- Coach
+- Club / Academy
+- Weekly training hours
+- Current goals
+
+5. Training Routine Section
+Title: “Built Through Daily Work”
+Show weekly training structure:
+- Tennis training
+- Physical conditioning
+- Match practice
+- Mental preparation
+Use clean icons or simple visual blocks.
+
+6. Media Gallery Section
+Title: “On Court”
+Create image/video cards:
+- Match moments
+- Training sessions
+- Serve practice
+- Footwork
+Use placeholder images with a premium layout.
+Make it easy to replace media.
+
+7. Vision Section
+Title: “The Road Ahead”
+Text:
+“He is building step by step toward international competition, stronger tournament results, and long-term professional development.”
+Add 3 future goals:
+- International tournaments
+- Strong junior ranking
+- Long-term professional pathway
+
+8. Partners Section
+Title: “Partners & Support”
+Important:
+Do NOT write “we need sponsors”.
+Use discreet wording:
+“Open to meaningful partnerships that support long-term athletic development.”
+Add cards:
+- Equipment support
+- Tournament travel support
+- Training development
+- Brand collaboration
+Add CTA button:
+“Discuss Partnership”
+
+9. Contact Section
+Title: “Get in Touch”
+Fields:
+- Name
+- Email
+- Message
+Also show:
+- Parent / Manager email placeholder
+- Instagram placeholder
+- Location placeholder
+
+10. Footer
+Include:
+- Player name
+- Short slogan
+- Navigation links
+- Social links
+
+Functional requirements:
+- Smooth scrolling navigation
+- Sticky header
+- Mobile responsive
+- Animated section reveal on scroll
+- Buttons should scroll to relevant sections
+- Clean component structure
+- Data should be stored in a separate file like src/data/playerData.ts so it can be easily edited
+- Create reusable components:
+  Header
+  Hero
+  About
+  Achievements
+  PlayerProfile
+  TrainingRoutine
+  MediaGallery
+  Vision
+  Partners
+  Contact
+  Footer
+  SectionTitle
+  StatCard
+
+Design details:
+- Use modern cards with subtle borders
+- Use glassmorphism carefully
+- Add tennis court line details as subtle background elements
+- Use large action photography placeholders
+- Add hover effects
+- Keep the website premium and serious
+
+Content tone:
+Professional, inspiring, restrained.
+Avoid childish language.
+Avoid begging for money.
+Use words like:
+- journey
+- development
+- discipline
+- potential
+- partners
+- support
+- long-term growth
+- international pathway
+
+Deliver:
+Generate the full React + Vite project code.
+Make sure the site runs without errors.
+Use placeholder assets from public URLs or CSS gradients if images are unavailable.
