@@ -69,3 +69,7 @@ Express server backing the portfolio site.
 - `ADMIN_PASSWORD` — password used to sign in to `/admin`
 - `DEFAULT_OBJECT_STORAGE_BUCKET_ID`, `PRIVATE_OBJECT_DIR`, `PUBLIC_OBJECT_SEARCH_PATHS` — Object Storage config
 - `AI_INTEGRATIONS_ANTHROPIC_BASE_URL`, `AI_INTEGRATIONS_ANTHROPIC_API_KEY` — Anthropic via Replit AI Integrations (auto-set by `setupReplitAIIntegrations`). Required for the admin auto-translate button.
+
+## Codebase hygiene
+- `src/components/ui/` is intentionally minimal — only the shadcn primitives the app actually uses are kept: `badge`, `button`, `card`, `input`, `label`, `tabs`, `textarea`, `toast`, `toaster`, `tooltip`. Do not re-add unused shadcn components or their Radix deps; install only what a real screen consumes.
+- `package.json` deps are pruned to match. If you add a new UI primitive, add the matching dep at the same time.
