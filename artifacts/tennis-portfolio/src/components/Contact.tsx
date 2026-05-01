@@ -2,11 +2,13 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SectionTitle } from "./SectionTitle";
 import { useContent } from "@/hooks/useContent";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, Check } from "lucide-react";
 
 export function Contact() {
   const playerData = useContent();
+  const { ui } = useLanguage();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -33,14 +35,14 @@ export function Contact() {
       }
       setSubmitted(true);
       toast({
-        title: "Inquiry Sent",
-        description: "Thank you for reaching out. We will be in touch shortly.",
+        title: ui.contactForm.successTitle,
+        description: ui.contactForm.successDesc,
       });
       form.reset();
     } catch (err) {
       toast({
-        title: "Could not send inquiry",
-        description: err instanceof Error ? err.message : "Please try again later.",
+        title: ui.contactForm.errorTitle,
+        description: err instanceof Error ? err.message : "",
         variant: "destructive",
       });
     } finally {
@@ -106,42 +108,42 @@ export function Contact() {
           >
             <form onSubmit={handleSubmit} className="flex flex-col gap-12">
               <div className="relative group">
-                <input 
-                  id="name" 
+                <input
+                  id="name"
                   name="name"
-                  required 
-                  className="w-full bg-transparent border-0 border-b border-white/20 pb-4 text-xl md:text-2xl font-sans text-white focus:ring-0 focus:outline-none focus:border-primary transition-colors peer placeholder:text-transparent" 
-                  placeholder="Full Name"
+                  required
+                  className="w-full bg-transparent border-0 border-b border-white/20 pb-4 text-xl md:text-2xl font-sans text-white focus:ring-0 focus:outline-none focus:border-primary transition-colors peer placeholder:text-transparent"
+                  placeholder={ui.contactForm.name}
                 />
                 <label htmlFor="name" className="absolute left-0 top-0 text-white/40 font-mono text-xs uppercase tracking-widest transition-all duration-300 peer-focus:-translate-y-6 peer-focus:text-primary peer-focus:text-[10px] peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:text-[10px]">
-                  Full Name
+                  {ui.contactForm.name}
                 </label>
               </div>
               
               <div className="relative group">
-                <input 
-                  id="email" 
+                <input
+                  id="email"
                   name="email"
-                  type="email" 
-                  required 
-                  className="w-full bg-transparent border-0 border-b border-white/20 pb-4 text-xl md:text-2xl font-sans text-white focus:ring-0 focus:outline-none focus:border-primary transition-colors peer placeholder:text-transparent" 
-                  placeholder="Email Address"
+                  type="email"
+                  required
+                  className="w-full bg-transparent border-0 border-b border-white/20 pb-4 text-xl md:text-2xl font-sans text-white focus:ring-0 focus:outline-none focus:border-primary transition-colors peer placeholder:text-transparent"
+                  placeholder={ui.contactForm.email}
                 />
                 <label htmlFor="email" className="absolute left-0 top-0 text-white/40 font-mono text-xs uppercase tracking-widest transition-all duration-300 peer-focus:-translate-y-6 peer-focus:text-primary peer-focus:text-[10px] peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:text-[10px]">
-                  Email Address
+                  {ui.contactForm.email}
                 </label>
               </div>
               
               <div className="relative group mt-4">
-                <textarea 
-                  id="message" 
+                <textarea
+                  id="message"
                   name="message"
-                  required 
-                  className="w-full bg-transparent border-0 border-b border-white/20 pb-4 text-xl md:text-2xl font-sans text-white focus:ring-0 focus:outline-none focus:border-primary transition-colors peer resize-y min-h-[100px] placeholder:text-transparent" 
-                  placeholder="Message"
+                  required
+                  className="w-full bg-transparent border-0 border-b border-white/20 pb-4 text-xl md:text-2xl font-sans text-white focus:ring-0 focus:outline-none focus:border-primary transition-colors peer resize-y min-h-[100px] placeholder:text-transparent"
+                  placeholder={ui.contactForm.message}
                 />
                 <label htmlFor="message" className="absolute left-0 top-0 text-white/40 font-mono text-xs uppercase tracking-widest transition-all duration-300 peer-focus:-translate-y-6 peer-focus:text-primary peer-focus:text-[10px] peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:text-[10px]">
-                  Message
+                  {ui.contactForm.message}
                 </label>
               </div>
               
@@ -150,7 +152,7 @@ export function Contact() {
                 disabled={isSubmitting || submitted}
                 className="group flex items-center justify-between w-full bg-white text-black px-8 py-6 text-sm font-mono uppercase tracking-widest font-bold hover:bg-white/90 transition-colors disabled:opacity-50 mt-4"
               >
-                <span>{submitted ? "Inquiry Received" : isSubmitting ? "Sending..." : "Submit Inquiry"}</span>
+                <span>{submitted ? ui.contactForm.successTitle : isSubmitting ? ui.contactForm.sending : ui.contactForm.send}</span>
                 {submitted ? (
                   <Check size={20} />
                 ) : (
@@ -172,10 +174,10 @@ export function Contact() {
                     <Check size={18} className="text-primary mt-0.5 shrink-0" />
                     <div>
                       <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50 mb-1">
-                        Inquiry Received
+                        {ui.contactForm.successTitle}
                       </p>
                       <p className="text-white/80 font-sans text-sm leading-relaxed">
-                        Thank you for reaching out. Management will be in touch shortly.
+                        {ui.contactForm.successDesc}
                       </p>
                     </div>
                   </motion.div>

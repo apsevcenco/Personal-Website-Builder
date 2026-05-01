@@ -1,4 +1,4 @@
-import type { SiteContent } from "./contentSchema";
+import type { LocalizedContent, SiteContent } from "./contentSchema";
 
 export const defaultSiteContent: SiteContent = {
   name: "Victor Crosetto",
@@ -89,4 +89,12 @@ export const defaultSiteContent: SiteContent = {
     hero: "",
     profile: "",
   },
+};
+
+export const defaultLocalizedContent: LocalizedContent = {
+  en: defaultSiteContent,
+  fr: defaultSiteContent,
+  it: defaultSiteContent,
+  de: defaultSiteContent,
+  es: defaultSiteContent,
 };

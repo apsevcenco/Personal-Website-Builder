@@ -1,7 +1,9 @@
 import { useContent } from "@/hooks/useContent";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function Footer() {
   const playerData = useContent();
+  const { ui } = useLanguage();
   const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const element = document.querySelector(href);
@@ -30,10 +32,10 @@ export function Footer() {
               Navigation
             </span>
             <div className="flex flex-wrap gap-x-8 gap-y-4 font-mono text-xs text-white uppercase tracking-widest">
-              <a href="#profile" onClick={(e) => scrollTo(e, "#profile")} className="hover:text-primary transition-colors">Profile</a>
-              <a href="#about" onClick={(e) => scrollTo(e, "#about")} className="hover:text-primary transition-colors">Story</a>
-              <a href="#gallery" onClick={(e) => scrollTo(e, "#gallery")} className="hover:text-primary transition-colors">Gallery</a>
-              <a href="#partners" onClick={(e) => scrollTo(e, "#partners")} className="hover:text-primary transition-colors">Partners</a>
+              <a href="#profile" onClick={(e) => scrollTo(e, "#profile")} className="hover:text-primary transition-colors">{ui.nav.profile}</a>
+              <a href="#about" onClick={(e) => scrollTo(e, "#about")} className="hover:text-primary transition-colors">{ui.nav.story}</a>
+              <a href="#gallery" onClick={(e) => scrollTo(e, "#gallery")} className="hover:text-primary transition-colors">{ui.nav.gallery}</a>
+              <a href="#partners" onClick={(e) => scrollTo(e, "#partners")} className="hover:text-primary transition-colors">{ui.nav.partners}</a>
             </div>
           </div>
         </div>
@@ -47,7 +49,7 @@ export function Footer() {
 
       <div className="container px-6 md:px-8 mt-12 md:mt-24 relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-white/40 uppercase tracking-widest border-t border-white/10 pt-8">
-          <p>&copy; {currentYear} {playerData.name}. ALL RIGHTS RESERVED.</p>
+          <p>&copy; {currentYear} {playerData.name}. {ui.footer.rights.toUpperCase()}.</p>
           <div className="flex gap-6 items-center">
             <a
               href={`https://instagram.com/${playerData.contact.instagram.replace(/^@/, "")}`}
@@ -61,10 +63,10 @@ export function Footer() {
               href={`mailto:${playerData.contact.email}`}
               className="hover:text-white transition-colors"
             >
-              Contact
+              {ui.nav.contact}
             </a>
             <a href="/admin" className="hover:text-white transition-colors opacity-60">
-              Admin
+              {ui.footer.admin}
             </a>
           </div>
         </div>

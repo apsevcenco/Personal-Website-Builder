@@ -33,19 +33,34 @@ Premium personal website for Victor Crosetto, a 12-year-old junior tennis player
 Dark cinematic ATP/Nike aesthetic with editorial typography.
 - **Fonts**: Bebas Neue (display), Montserrat (sans), DM Sans (body), JetBrains Mono (mono)
 - **Sections**: Hero, Player Profile, About, Achievements, Training, Gallery, Vision, Partners, Contact
-- **Content source**: live-edited via `/api/content` (falls back to `defaultContent.ts` if API unavailable)
+- **Languages**: EN (source), FR, IT, DE, ES.
+  - Public visitors switch language via the header pill (EN/FR/IT/DE/ES). Choice persists in `localStorage` (`site-language`) and falls back to browser language on first visit.
+  - UI chrome strings (nav, contact form, footer) live in `src/i18n/uiStrings.ts`.
+  - Editable site content is stored per-locale in `site_content` (jsonb under `content.<locale>`).
+- **Content source**: live-edited via `GET /api/content?lang=<locale>` (falls back to `defaultContent.ts` if API unavailable).
 - **Admin panel** at `/admin`:
   - Sign in with `ADMIN_PASSWORD` env var
-  - Edit every text field, list, card, and stat
+  - Locale tabs (EN, FR, IT, DE, ES) — edit each language separately. EN is marked `·src` as the source of truth.
+  - Edit every text field, list, card, and stat per-locale.
+  - **Auto-translate** button ("Translate EN → FR · IT · DE · ES") calls `POST /api/admin/content/translate` to fill the four target locales from English using Anthropic Claude. Proper nouns (name, "Victor Crosetto"), emails, URLs, image URLs, training icon names, ticker codes, and 4-digit years are preserved verbatim.
   - Upload photos (hero, profile, gallery) directly from disk via `/api/storage` presigned URLs
   - Manage incoming inquiries from the contact form
-  - "Reset to defaults" returns all content to baseline
+  - "Reset all" returns ALL locales to defaults
 
 ### api-server (`/api`)
 Express server backing the portfolio site.
-- Routes: `/healthz`, `/content`, `/admin/*`, `/inquiries`, `/storage/*`
+- Routes:
+  - `GET /healthz`
+  - `GET /content?lang=<locale>` — public, returns `SiteContent` for one locale (defaults to `en`).
+  - `GET /locales` — public, returns `{ source, locales }` advertising supported languages.
+  - `GET /admin/content` — auth, returns full `LocalizedContent` (all 5 locales).
+  - `PUT /admin/content` — auth, body `{ locale, content }`, replaces a single locale.
+  - `POST /admin/content/reset` — auth, resets all locales to defaults.
+  - `POST /admin/content/translate` — auth, optional `{ targets?: Locale[] }`, translates EN → targets via Anthropic Claude. Returns `{ ok, results, content }` where `results[locale]` is "ok" or an error string.
+  - `/inquiries`, `/storage/*` (unchanged)
 - Auth: HMAC-signed cookie (`vc_admin`) using `SESSION_SECRET`. Server refuses to start if `SESSION_SECRET` is unset or shorter than 16 chars.
-- DB: `site_content` (singleton row, jsonb) and `inquiries` tables.
+- DB: `site_content` (singleton row, jsonb keyed by locale) and `inquiries` tables. Legacy single-locale rows are auto-migrated into `{ en: <legacy>, fr/it/de/es: defaults }` on first read.
+- Translator: `src/lib/translator.ts` — Claude `claude-sonnet-4-6` via `@workspace/integrations-anthropic-ai`. Flattens `SiteContent` to `id → string`, skips `images.*`, `contact.email`, `contact.instagram`, training icon names, ticker codes, and 4-digit years. Output validated with Zod and merged back over the source structure.
 - Object storage: Replit Object Storage via `@google-cloud/storage` for image uploads.
 
 ### Required environment variables
@@ -53,3 +68,4 @@ Express server backing the portfolio site.
 - `SESSION_SECRET` — HMAC secret for admin cookies
 - `ADMIN_PASSWORD` — password used to sign in to `/admin`
 - `DEFAULT_OBJECT_STORAGE_BUCKET_ID`, `PRIVATE_OBJECT_DIR`, `PUBLIC_OBJECT_SEARCH_PATHS` — Object Storage config
+- `AI_INTEGRATIONS_ANTHROPIC_BASE_URL`, `AI_INTEGRATIONS_ANTHROPIC_API_KEY` — Anthropic via Replit AI Integrations (auto-set by `setupReplitAIIntegrations`). Required for the admin auto-translate button.

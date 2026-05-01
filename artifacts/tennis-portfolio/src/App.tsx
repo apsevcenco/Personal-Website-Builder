@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import { ContentProvider } from "@/hooks/useContent";
+import { LanguageProvider } from "@/hooks/useLanguage";
 import { AdminLogin } from "@/pages/admin/AdminLogin";
 import { AdminEditor } from "@/pages/admin/AdminEditor";
 import { AdminInquiries } from "@/pages/admin/AdminInquiries";
@@ -60,17 +61,19 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <ContentProvider>
-          <div className="film-grain" />
-          <motion.div
-            className="fixed top-0 right-0 bottom-0 w-[1px] bg-primary origin-top z-[100]"
-            style={{ scaleY: scrollYProgress }}
-          />
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <AppRouter />
-          </WouterRouter>
-          <Toaster />
-        </ContentProvider>
+        <LanguageProvider>
+          <ContentProvider>
+            <div className="film-grain" />
+            <motion.div
+              className="fixed top-0 right-0 bottom-0 w-[1px] bg-primary origin-top z-[100]"
+              style={{ scaleY: scrollYProgress }}
+            />
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <AppRouter />
+            </WouterRouter>
+            <Toaster />
+          </ContentProvider>
+        </LanguageProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

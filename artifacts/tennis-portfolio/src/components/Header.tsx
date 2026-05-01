@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useContent } from "@/hooks/useContent";
+import { useLanguage } from "@/hooks/useLanguage";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export function Header() {
   const playerData = useContent();
+  const { ui } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { scrollY } = useScroll();
@@ -14,13 +17,13 @@ export function Header() {
   });
 
   const links = [
-    { label: "Profile", href: "#profile" },
-    { label: "Story", href: "#about" },
-    { label: "Training", href: "#training" },
-    { label: "Gallery", href: "#gallery" },
-    { label: "Vision", href: "#vision" },
-    { label: "Partners", href: "#partners" },
-    { label: "Contact", href: "#contact" }
+    { label: ui.nav.profile, href: "#profile" },
+    { label: ui.nav.story, href: "#about" },
+    { label: ui.nav.training, href: "#training" },
+    { label: ui.nav.gallery, href: "#gallery" },
+    { label: ui.nav.vision, href: "#vision" },
+    { label: ui.nav.partners, href: "#partners" },
+    { label: ui.nav.contact, href: "#contact" },
   ];
 
   const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -60,7 +63,7 @@ export function Header() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
             {links.map((link) => (
-              <a 
+              <a
                 key={link.label}
                 href={link.href}
                 onClick={(e) => scrollTo(e, link.href)}
@@ -70,15 +73,20 @@ export function Header() {
                 <span className="absolute -bottom-2 left-0 w-0 h-px bg-white transition-all group-hover:w-full" />
               </a>
             ))}
+            <LanguageSwitcher />
           </nav>
 
           {/* Mobile Toggle */}
-          <button 
-            className="md:hidden text-white p-2 relative z-[60]"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="md:hidden flex items-center gap-2 relative z-[60]">
+            <LanguageSwitcher variant="compact" />
+            <button
+              className="text-white p-2"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
 

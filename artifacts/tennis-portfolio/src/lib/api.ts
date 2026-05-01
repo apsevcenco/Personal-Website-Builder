@@ -1,6 +1,9 @@
 import type { SiteContent } from "@/data/defaultContent";
+import type { Locale } from "@/i18n/uiStrings";
 
 const API_BASE = "/api";
+
+export type LocalizedContent = Record<Locale, SiteContent>;
 
 async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
   const res = await fetch(input, {
@@ -21,27 +24,54 @@ async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export async function fetchContent(): Promise<SiteContent> {
-  return jsonFetch<SiteContent>(`${API_BASE}/content`);
+export async function fetchContent(language: Locale): Promise<SiteContent> {
+  return jsonFetch<SiteContent>(
+    `${API_BASE}/content?lang=${encodeURIComponent(language)}`,
+  );
 }
 
-export async function saveContent(content: SiteContent): Promise<SiteContent> {
-  const res = await jsonFetch<{ ok: true; content: SiteContent }>(
-    `${API_BASE}/content`,
+export async function fetchAdminContent(): Promise<LocalizedContent> {
+  const res = await jsonFetch<{ content: LocalizedContent }>(
+    `${API_BASE}/admin/content`,
+  );
+  return res.content;
+}
+
+export async function saveContent(
+  locale: Locale,
+  content: SiteContent,
+): Promise<LocalizedContent> {
+  const res = await jsonFetch<{ ok: true; content: LocalizedContent }>(
+    `${API_BASE}/admin/content`,
     {
       method: "PUT",
-      body: JSON.stringify(content),
+      body: JSON.stringify({ locale, content }),
     },
   );
   return res.content;
 }
 
-export async function resetContent(): Promise<SiteContent> {
-  const res = await jsonFetch<{ ok: true; content: SiteContent }>(
-    `${API_BASE}/content/reset`,
+export async function resetContent(): Promise<LocalizedContent> {
+  const res = await jsonFetch<{ ok: true; content: LocalizedContent }>(
+    `${API_BASE}/admin/content/reset`,
     { method: "POST" },
   );
   return res.content;
+}
+
+export async function translateContent(
+  targets?: Locale[],
+): Promise<{ results: Record<string, string>; content: LocalizedContent }> {
+  const body = targets ? JSON.stringify({ targets }) : "{}";
+  const res = await jsonFetch<{
+    ok: true;
+    results: Record<string, string>;
+    content: LocalizedContent;
+  }>(`${API_BASE}/admin/content/translate`, {
+    method: "POST",
+    body,
+  });
+  return { results: res.results, content: res.content };
 }
 
 export interface Inquiry {

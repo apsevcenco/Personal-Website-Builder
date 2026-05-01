@@ -93,3 +93,23 @@ export const siteContentSchema = z.object({
 });
 
 export type SiteContent = z.infer<typeof siteContentSchema>;
+
+export const SUPPORTED_LOCALES = ["en", "fr", "it", "de", "es"] as const;
+export type Locale = (typeof SUPPORTED_LOCALES)[number];
+export const SOURCE_LOCALE: Locale = "en";
+
+export const localeSchema = z.enum(SUPPORTED_LOCALES);
+
+export const localizedContentSchema = z.object({
+  en: siteContentSchema,
+  fr: siteContentSchema,
+  it: siteContentSchema,
+  de: siteContentSchema,
+  es: siteContentSchema,
+});
+
+export type LocalizedContent = z.infer<typeof localizedContentSchema>;
+
+export function isLocale(value: unknown): value is Locale {
+  return typeof value === "string" && (SUPPORTED_LOCALES as readonly string[]).includes(value);
+}
