@@ -16,14 +16,29 @@ export function Hero() {
   return (
     <section id="top" className="relative min-h-[100dvh] flex flex-col justify-end pb-24 md:pb-32 overflow-hidden">
       {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background z-10" />
-        <div className="absolute inset-0 bg-black/30 z-10" />
-        <img 
-          src={heroSrc} 
-          alt={playerData.name} 
-          className="w-full h-full object-cover object-top md:object-center animate-ken-burns scale-100 origin-center"
+      <div className="absolute inset-0 z-0 overflow-hidden bg-background">
+        {/* Mobile: full-bleed image with focus on subject */}
+        <img
+          src={heroSrc}
+          alt={playerData.name}
+          className="md:hidden absolute inset-0 w-full h-full object-cover animate-ken-burns origin-center"
+          style={{ objectPosition: "50% 25%" }}
         />
+        {/* Desktop: image anchored to the right half so portrait photos aren't cropped */}
+        <img
+          src={heroSrc}
+          alt=""
+          aria-hidden="true"
+          className="hidden md:block absolute top-0 right-0 h-full w-[55%] lg:w-[50%] object-cover animate-ken-burns origin-center"
+          style={{ objectPosition: "50% 30%" }}
+        />
+        {/* Mobile overlays */}
+        <div className="md:hidden absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background z-10" />
+        <div className="md:hidden absolute inset-0 bg-black/30 z-10" />
+        {/* Desktop overlays: smooth fade from left dark side into the photo, plus bottom fade */}
+        <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-background via-background/85 via-40% to-transparent z-10" />
+        <div className="hidden md:block absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background z-10" />
+        <div className="hidden md:block absolute inset-0 bg-black/15 z-10" />
       </div>
 
       <div className="container relative z-20 px-6 md:px-8 pt-32">
