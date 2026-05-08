@@ -1,0 +1,43 @@
+2026-05-08T08:28:33.286695324Z ==> Deploying...
+2026-05-08T08:28:33.475314712Z ==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+2026-05-08T08:28:53.900329983Z ==> Running 'pnpm --filter @workspace/api-server run start'
+2026-05-08T08:28:55.077202563Z 
+2026-05-08T08:28:55.077229224Z > @workspace/api-server@0.0.0 start /opt/render/project/src/artifacts/api-server
+2026-05-08T08:28:55.077247055Z > node --enable-source-maps ./dist/index.mjs
+2026-05-08T08:28:55.077249725Z 
+2026-05-08T08:28:56.171107135Z /opt/render/project/src/lib/db/src/index.ts:8
+2026-05-08T08:28:56.171140066Z   throw new Error(
+2026-05-08T08:28:56.171180538Z         ^
+2026-05-08T08:28:56.171183968Z 
+2026-05-08T08:28:56.171187619Z Error: DATABASE_URL must be set. Did you forget to provision a database?
+2026-05-08T08:28:56.171190369Z     at <anonymous> (/opt/render/project/src/lib/db/src/index.ts:8:9)
+2026-05-08T08:28:56.171193049Z     at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+2026-05-08T08:28:56.171196529Z     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+2026-05-08T08:28:56.171199179Z     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+2026-05-08T08:28:56.171201789Z 
+2026-05-08T08:28:56.17120444Z Node.js v24.14.1
+2026-05-08T08:28:56.259144516Z /opt/render/project/src/artifacts/api-server:
+2026-05-08T08:28:56.259171757Z  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/api-server@0.0.0 start: `node --enable-source-maps ./dist/index.mjs`
+2026-05-08T08:28:56.259176837Z Exit status 1
+2026-05-08T08:29:00.409754432Z ==> Exited with status 1
+2026-05-08T08:29:00.412071064Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+2026-05-08T08:29:00.721729816Z ==> Instance srv-d7u1rregvqtc73c2p2vg-jg5ff restarted
+2026-05-08T08:29:01.681874869Z ==> Running 'pnpm --filter @workspace/api-server run start'
+2026-05-08T08:29:02.646229938Z 
+2026-05-08T08:29:02.646401657Z > @workspace/api-server@0.0.0 start /opt/render/project/src/artifacts/api-server
+2026-05-08T08:29:02.646413477Z > node --enable-source-maps ./dist/index.mjs
+2026-05-08T08:29:02.646417017Z 
+2026-05-08T08:29:03.566195143Z /opt/render/project/src/lib/db/src/index.ts:8
+2026-05-08T08:29:03.566224265Z   throw new Error(
+2026-05-08T08:29:03.566228875Z         ^
+2026-05-08T08:29:03.566273607Z 
+2026-05-08T08:29:03.566279717Z Error: DATABASE_URL must be set. Did you forget to provision a database?
+2026-05-08T08:29:03.566283588Z     at <anonymous> (/opt/render/project/src/lib/db/src/index.ts:8:9)
+2026-05-08T08:29:03.566287918Z     at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+2026-05-08T08:29:03.566293798Z     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+2026-05-08T08:29:03.566297329Z     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+2026-05-08T08:29:03.566300629Z 
+2026-05-08T08:29:03.566304219Z Node.js v24.14.1
+2026-05-08T08:29:03.667538398Z /opt/render/project/src/artifacts/api-server:
+2026-05-08T08:29:03.667558559Z  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/api-server@0.0.0 start: `node --enable-source-maps ./dist/index.mjs`
+2026-05-08T08:29:03.667563619Z Exit status 1
