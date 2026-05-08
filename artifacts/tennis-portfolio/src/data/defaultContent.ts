@@ -1,4 +1,4 @@
-import heroImage from "@/assets/images/hero.png";
+import heroImage from "@/assets/images/hero.jpg";
 import serveImage from "@/assets/images/serve.png";
 import footworkImage from "@/assets/images/footwork.png";
 import trainingImage from "@/assets/images/training.png";
