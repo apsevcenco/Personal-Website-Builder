@@ -7,6 +7,10 @@ import {
 import { ObjectStorageService, ObjectNotFoundError } from "../lib/objectStorage";
 import { ObjectPermission } from "../lib/objectAcl";
 import { requireAdmin } from "../middlewares/requireAdmin";
+import {
+  isSupabaseStorageConfigured,
+  createSupabaseUpload,
+} from "../lib/supabaseStorage";
 
 const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
@@ -28,8 +32,25 @@ router.post("/storage/uploads/request-url", requireAdmin, async (req: Request, r
   try {
     const { name, size, contentType } = parsed.data;
 
-    const uploadURL = await objectStorageService.getObjectEntityUploadURL();
-    const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
+    if (!contentType.startsWith("image/")) {
+      res.status(400).json({ error: "Only image uploads are allowed" });
+      return;
+    }
+    if (size > 10 * 1024 * 1024) {
+      res.status(400).json({ error: "File too large (max 10 MB)" });
+      return;
+    }
+
+    let uploadURL: string;
+    let objectPath: string;
+    if (isSupabaseStorageConfigured()) {
+      const out = await createSupabaseUpload({ name, contentType });
+      uploadURL = out.uploadURL;
+      objectPath = out.objectPath;
+    } else {
+      uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
+    }
 
     res.json(
       RequestUploadUrlResponse.parse({

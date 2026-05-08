@@ -61,7 +61,7 @@ Express server backing the portfolio site.
 - Auth: HMAC-signed cookie (`vc_admin`) using `SESSION_SECRET`. Server refuses to start if `SESSION_SECRET` is unset or shorter than 16 chars.
 - DB: `site_content` (singleton row, jsonb keyed by locale) and `inquiries` tables. Legacy single-locale rows are auto-migrated into `{ en: <legacy>, fr/it/de/es: defaults }` on first read.
 - Translator: `src/lib/translator.ts` — OpenAI (`gpt-4o-mini` by default, override with `OPENAI_TRANSLATE_MODEL`) via the `openai` SDK. Reads `OPENAI_API_KEY` (and optional `OPENAI_BASE_URL`). Flattens `SiteContent` to `id → string`, skips `images.*`, `contact.email`, `contact.instagram`, training icon names, ticker codes, and 4-digit years. Uses `response_format: json_object`. Output validated with Zod and merged back over the source structure.
-- Object storage: Replit Object Storage via `@google-cloud/storage` for image uploads.
+- Object storage: Replit Object Storage via `@google-cloud/storage` for image uploads. **Supabase Storage fallback**: if `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` are set (e.g. on Render), `POST /storage/uploads/request-url` returns a Supabase signed upload URL and the public bucket URL as `objectPath`. Bucket name comes from `SUPABASE_STORAGE_BUCKET` (default `uploads`). The bucket must exist and be public-read in the Supabase dashboard. Frontend `resolveImageSrc` passes full https URLs through unchanged.
 
 ### Required environment variables
 - `DATABASE_URL` — PostgreSQL connection string (auto-set on Replit)
