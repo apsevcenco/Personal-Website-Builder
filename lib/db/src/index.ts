@@ -73,7 +73,7 @@ async function buildPoolConfig(connectionString: string): Promise<pg.PoolConfig>
     }
   }
   // eslint-disable-next-line no-console
-  console.log(`[db] connecting to host=${originalHost} port=${port} db=${database} ssl=${shouldForceSsl(originalHost, params)} resolution=${lookupNote}`);
+  console.log(`[db] connecting to host=${originalHost} port=${port} db=${database} user=${user} ssl=${shouldForceSsl(originalHost, params)} resolution=${lookupNote}`);
 
   const config: pg.PoolConfig = {
     host,
