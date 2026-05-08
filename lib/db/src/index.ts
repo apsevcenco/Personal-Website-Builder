@@ -7,6 +7,18 @@ import * as schema from "./schema";
 // outbound IPv6, but Supabase/AWS often resolve to AAAA first.
 dns.setDefaultResultOrder("ipv4first");
 
+// Custom DNS lookup that forces IPv4 (family: 4). Belt-and-suspenders
+// alongside setDefaultResultOrder, since some pg/net code paths bypass
+// the default order.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ipv4Lookup = (hostname: string, options: any, callback?: any): void => {
+  if (typeof options === "function") {
+    dns.lookup(hostname, { family: 4 }, options);
+    return;
+  }
+  dns.lookup(hostname, { ...(options ?? {}), family: 4 }, callback);
+};
+
 const { Pool } = pg;
 
 if (!process.env.DATABASE_URL) {
@@ -34,6 +46,8 @@ function shouldUseSsl(connectionString: string): boolean {
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: shouldUseSsl(process.env.DATABASE_URL) ? { rejectUnauthorized: false } : undefined,
+  // @ts-expect-error pg types don't expose `lookup`, but it's forwarded to net.connect
+  lookup: ipv4Lookup,
 });
 export const db = drizzle(pool, { schema });
 
