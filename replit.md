@@ -42,7 +42,7 @@ Dark cinematic ATP/Nike aesthetic with editorial typography.
   - Sign in with `ADMIN_PASSWORD` env var
   - Locale tabs (EN, FR, IT, DE, ES) — edit each language separately. EN is marked `·src` as the source of truth.
   - Edit every text field, list, card, and stat per-locale.
-  - **Auto-translate** button ("Translate EN → FR · IT · DE · ES") calls `POST /api/admin/content/translate` to fill the four target locales from English using Anthropic Claude. Proper nouns (name, "Victor Crosetto"), emails, URLs, image URLs, training icon names, ticker codes, and 4-digit years are preserved verbatim.
+  - **Auto-translate** button ("Translate EN → FR · IT · DE · ES") calls `POST /api/admin/content/translate` to fill the four target locales from English using OpenAI. Proper nouns (name, "Victor Crosetto"), emails, URLs, image URLs, training icon names, ticker codes, and 4-digit years are preserved verbatim.
   - Upload photos (hero, profile, gallery) directly from disk via `/api/storage` presigned URLs
   - Manage incoming inquiries from the contact form
   - "Reset all" returns ALL locales to defaults
@@ -56,11 +56,11 @@ Express server backing the portfolio site.
   - `GET /admin/content` — auth, returns full `LocalizedContent` (all 5 locales).
   - `PUT /admin/content` — auth, body `{ locale, content }`, replaces a single locale.
   - `POST /admin/content/reset` — auth, resets all locales to defaults.
-  - `POST /admin/content/translate` — auth, optional `{ targets?: Locale[] }`, translates EN → targets via Anthropic Claude. Returns `{ ok, results, content }` where `results[locale]` is "ok" or an error string.
+  - `POST /admin/content/translate` — auth, optional `{ targets?: Locale[] }`, translates EN → targets via OpenAI. Returns `{ ok, results, content }` where `results[locale]` is "ok" or an error string.
   - `/inquiries`, `/storage/*` (unchanged)
 - Auth: HMAC-signed cookie (`vc_admin`) using `SESSION_SECRET`. Server refuses to start if `SESSION_SECRET` is unset or shorter than 16 chars.
 - DB: `site_content` (singleton row, jsonb keyed by locale) and `inquiries` tables. Legacy single-locale rows are auto-migrated into `{ en: <legacy>, fr/it/de/es: defaults }` on first read.
-- Translator: `src/lib/translator.ts` — Claude `claude-sonnet-4-6` via `@workspace/integrations-anthropic-ai`. Flattens `SiteContent` to `id → string`, skips `images.*`, `contact.email`, `contact.instagram`, training icon names, ticker codes, and 4-digit years. Output validated with Zod and merged back over the source structure.
+- Translator: `src/lib/translator.ts` — OpenAI (`gpt-4o-mini` by default, override with `OPENAI_TRANSLATE_MODEL`) via the `openai` SDK. Reads `OPENAI_API_KEY` (and optional `OPENAI_BASE_URL`). Flattens `SiteContent` to `id → string`, skips `images.*`, `contact.email`, `contact.instagram`, training icon names, ticker codes, and 4-digit years. Uses `response_format: json_object`. Output validated with Zod and merged back over the source structure.
 - Object storage: Replit Object Storage via `@google-cloud/storage` for image uploads.
 
 ### Required environment variables
@@ -68,7 +68,7 @@ Express server backing the portfolio site.
 - `SESSION_SECRET` — HMAC secret for admin cookies
 - `ADMIN_PASSWORD` — password used to sign in to `/admin`
 - `DEFAULT_OBJECT_STORAGE_BUCKET_ID`, `PRIVATE_OBJECT_DIR`, `PUBLIC_OBJECT_SEARCH_PATHS` — Object Storage config
-- `AI_INTEGRATIONS_ANTHROPIC_BASE_URL`, `AI_INTEGRATIONS_ANTHROPIC_API_KEY` — Anthropic via Replit AI Integrations (auto-set by `setupReplitAIIntegrations`). Required for the admin auto-translate button.
+- `OPENAI_API_KEY` — OpenAI API key, required for the admin auto-translate button. Optional `OPENAI_BASE_URL` (custom endpoint) and `OPENAI_TRANSLATE_MODEL` (defaults to `gpt-4o-mini`).
 
 ## Codebase hygiene
 - `src/components/ui/` is intentionally minimal — only the shadcn primitives the app actually uses are kept: `badge`, `button`, `card`, `input`, `label`, `tabs`, `textarea`, `toast`, `toaster`, `tooltip`. Do not re-add unused shadcn components or their Radix deps; install only what a real screen consumes.

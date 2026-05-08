@@ -1,4 +1,4 @@
-import { anthropic } from "@workspace/integrations-anthropic-ai";
+import OpenAI from "openai";
 import {
   siteContentSchema,
   type SiteContent,
@@ -47,9 +47,7 @@ const NON_TRANSLATABLE_REGEX: readonly RegExp[] = [
 function isProtectedPath(path: string): boolean {
   if (NON_TRANSLATABLE_EXACT.has(path)) return true;
   if (NON_TRANSLATABLE_PREFIXES.some((p) => path === p.slice(0, -1) || path.startsWith(p))) {
-    // Ticker entries are pure brand tokens — never translate
     if (path.startsWith("ticker.")) return true;
-    // For achievements/gallery/training.items, only specific sub-fields are protected; let regex decide
   }
   if (NON_TRANSLATABLE_REGEX.some((r) => r.test(path))) return true;
   return false;
@@ -62,7 +60,6 @@ function shouldTranslate(path: string, value: unknown): boolean {
   if (value.trim().length === 0) return false;
   if (isProtectedPath(path)) return false;
   if (URL_LIKE.test(value)) return false;
-  // Pure 4-digit year — never translate
   if (/^\d{4}$/.test(value.trim())) return false;
   return true;
 }
@@ -128,6 +125,22 @@ Rules:
 - For tagline-like fields, prefer punchy phrasing over literal word-for-word.
 - Output language: {{TARGET_LANGUAGE}}.`;
 
+let cachedClient: OpenAI | null = null;
+function getClient(): OpenAI {
+  if (cachedClient) return cachedClient;
+  const apiKey = process.env["OPENAI_API_KEY"];
+  if (!apiKey) {
+    throw new Error(
+      "OPENAI_API_KEY environment variable is not set. The auto-translate feature requires an OpenAI API key.",
+    );
+  }
+  cachedClient = new OpenAI({
+    apiKey,
+    baseURL: process.env["OPENAI_BASE_URL"] || undefined,
+  });
+  return cachedClient;
+}
+
 interface TranslateOptions {
   targetLocale: Locale;
 }
@@ -140,31 +153,29 @@ async function translateMap(
   const inputObj: Record<string, string> = {};
   for (const e of entries) inputObj[e.path] = e.value;
 
-  const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 8192,
-    system: SYSTEM_PROMPT.replace("{{TARGET_LANGUAGE}}", LOCALE_NAMES[opts.targetLocale]),
+  const model = process.env["OPENAI_TRANSLATE_MODEL"] || "gpt-4o-mini";
+  const completion = await getClient().chat.completions.create({
+    model,
+    response_format: { type: "json_object" },
     messages: [
       {
+        role: "system",
+        content: SYSTEM_PROMPT.replace("{{TARGET_LANGUAGE}}", LOCALE_NAMES[opts.targetLocale]),
+      },
+      {
         role: "user",
-        content: `Translate the string VALUES of this JSON object to ${LOCALE_NAMES[opts.targetLocale]}. Keep KEYS unchanged. Reply ONLY with the JSON, no markdown fences.\n\n${JSON.stringify(inputObj, null, 2)}`,
+        content: `Translate the string VALUES of this JSON object to ${LOCALE_NAMES[opts.targetLocale]}. Keep KEYS unchanged. Reply ONLY with the JSON object, no markdown.\n\n${JSON.stringify(inputObj, null, 2)}`,
       },
     ],
   });
 
-  const block = message.content[0];
-  if (!block || block.type !== "text") {
+  const text = completion.choices[0]?.message?.content?.trim();
+  if (!text) {
     throw new Error("Translator returned no text content");
   }
-  const text = block.text.trim();
-  // Strip optional ```json fences
-  const stripped = text
-    .replace(/^```(?:json)?\s*/i, "")
-    .replace(/\s*```$/i, "")
-    .trim();
   let parsed: unknown;
   try {
-    parsed = JSON.parse(stripped);
+    parsed = JSON.parse(text);
   } catch (err) {
     throw new Error(`Translator returned invalid JSON: ${(err as Error).message}`);
   }
@@ -178,7 +189,6 @@ async function translateMap(
   return result;
 }
 
-// Tokens that must appear verbatim in every translated string that contained them.
 const PROTECTED_TOKENS: readonly string[] = [
   "Victor Crosetto",
   "Crosetto",
@@ -212,11 +222,8 @@ export async function translateSiteContent(
   for (const e of entries) {
     const newValue = translated[e.path];
     if (typeof newValue !== "string" || newValue.length === 0) {
-      // Translator omitted this field — keep source value (already cloned).
       continue;
     }
-    // Guardrail: if the source contained a protected proper noun and the translation dropped it,
-    // restore the source rather than write a corrupted translation.
     const dropped = violatesProtectedTokens(e.value, newValue);
     if (dropped) {
       continue;
@@ -224,7 +231,6 @@ export async function translateSiteContent(
     setByPath(target as unknown as Record<string, unknown>, e.path, newValue);
   }
 
-  // Validate output against schema
   const parsed = siteContentSchema.safeParse(target);
   if (!parsed.success) {
     throw new Error(
