@@ -1,6 +1,11 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
+import dns from "dns";
 import * as schema from "./schema";
+
+// Prefer IPv4 DNS resolution. Some hosts (e.g. Render Free) don't have
+// outbound IPv6, but Supabase/AWS often resolve to AAAA first.
+dns.setDefaultResultOrder("ipv4first");
 
 const { Pool } = pg;
 
