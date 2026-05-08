@@ -73,3 +73,4 @@ Express server backing the portfolio site.
 ## Codebase hygiene
 - `src/components/ui/` is intentionally minimal — only the shadcn primitives the app actually uses are kept: `badge`, `button`, `card`, `input`, `label`, `tabs`, `textarea`, `toast`, `toaster`, `tooltip`. Do not re-add unused shadcn components or their Radix deps; install only what a real screen consumes.
 - `package.json` deps are pruned to match. If you add a new UI primitive, add the matching dep at the same time.
+- Repo contains only what the live site needs: `artifacts/api-server`, `artifacts/tennis-portfolio`, and libs `lib/db`, `lib/api-spec`, `lib/api-zod`. No mockup sandbox, no scripts package, no unused integration libs.
