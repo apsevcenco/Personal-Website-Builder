@@ -44,25 +44,38 @@ function shouldForceSsl(host: string, urlParams: URLSearchParams): boolean {
   return !isLocalHost(host);
 }
 
-// Build pool config. We pass `connectionString` so pg keeps its native URL
-// parsing (sslmode, options, etc.), AND override `host` with a resolved
-// IPv4 address for non-local hostnames. This bypasses any IPv6 resolution
-// in pg/net (Render Free has no outbound IPv6, but Supabase resolves AAAA).
+// Build pool config. We parse the URL ourselves (instead of passing
+// `connectionString` to pg) because pg's internal parser overrides any
+// `host` we set when both are present. We resolve the hostname to an IPv4
+// address ONCE at startup so pg connects directly to the IP, bypassing any
+// IPv6 resolution path (Render Free has no outbound IPv6, but Supabase
+// resolves AAAA first).
 async function buildPoolConfig(connectionString: string): Promise<pg.PoolConfig> {
   const url = new URL(connectionString);
   const originalHost = decodeURIComponent(url.hostname);
+  const port = url.port ? Number(url.port) : 5432;
+  const user = decodeURIComponent(url.username);
+  const password = decodeURIComponent(url.password);
+  const database = decodeURIComponent(url.pathname.replace(/^\//, ""));
   const params = url.searchParams;
 
-  const config: pg.PoolConfig = { connectionString };
-
+  let host = originalHost;
   if (!isIp(originalHost) && !isLocalHost(originalHost)) {
     try {
       const { address } = await dns.promises.lookup(originalHost, { family: 4 });
-      config.host = address;
+      host = address;
     } catch {
       // fall back to hostname; pg will try its own resolution
     }
   }
+
+  const config: pg.PoolConfig = {
+    host,
+    port,
+    user,
+    password,
+    database,
+  };
 
   if (shouldForceSsl(originalHost, params)) {
     config.ssl = { rejectUnauthorized: false, servername: originalHost };
