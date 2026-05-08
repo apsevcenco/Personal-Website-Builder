@@ -1,0 +1,27 @@
+2026-05-08T09:01:05.730285295Z ==> Cloning from https://github.com/apsevcenco/Personal-Website-Builder
+2026-05-08T09:01:06.48213146Z ==> Checking out commit 2d3dbcece1e3979afbd6fcd474aa6fdaef4083df in branch main
+2026-05-08T09:01:07.810072953Z ==> Installing dependencies with pnpm...
+2026-05-08T09:01:07.92639353Z ==> Using Node.js version 24.14.1 (default)
+2026-05-08T09:01:07.957717631Z ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+2026-05-08T09:01:17.971651312Z ==> Running build command 'pnpm install && pnpm --filter @workspace/tennis-portfolio run build'...
+2026-05-08T09:01:20.319229842Z 
+2026-05-08T09:01:20.319259301Z > @workspace/tennis-portfolio@0.0.0 build /opt/render/project/src/artifacts/tennis-portfolio
+2026-05-08T09:01:20.31926571Z > vite build --config vite.config.ts
+2026-05-08T09:01:20.319268327Z 
+2026-05-08T09:01:20.655465968Z failed to load config from /opt/render/project/src/artifacts/tennis-portfolio/vite.config.ts
+2026-05-08T09:01:20.658506904Z error during build:
+2026-05-08T09:01:20.658517184Z Error: BASE_PATH environment variable is required but was not provided.
+2026-05-08T09:01:20.658521811Z     at file:///opt/render/project/src/artifacts/tennis-portfolio/node_modules/.vite-temp/vite.config.ts.timestamp-1778230880525-b1f7f0397636a.mjs:20:9
+2026-05-08T09:01:20.658524829Z     at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+2026-05-08T09:01:20.658527869Z     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+2026-05-08T09:01:20.658532479Z     at async loadConfigFromBundledFile (file:///opt/render/project/src/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35920:12)
+2026-05-08T09:01:20.658535553Z     at async bundleAndLoadConfigFile (file:///opt/render/project/src/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35808:17)
+2026-05-08T09:01:20.658538921Z     at async loadConfigFromFile (file:///opt/render/project/src/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35775:42)
+2026-05-08T09:01:20.658541789Z     at async resolveConfig (file:///opt/render/project/src/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:35424:22)
+2026-05-08T09:01:20.658544681Z     at async createBuilder (file:///opt/render/project/src/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:33879:19)
+2026-05-08T09:01:20.658548546Z     at async CAC.<anonymous> (file:///opt/render/project/src/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/cli.js:629:10)
+2026-05-08T09:01:20.689579571Z /opt/render/project/src/artifacts/tennis-portfolio:
+2026-05-08T09:01:20.689593499Z  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/tennis-portfolio@0.0.0 build: `vite build --config vite.config.ts`
+2026-05-08T09:01:20.689596193Z Exit status 1
+2026-05-08T09:01:20.742354508Z ==> Build failed 😞
+2026-05-08T09:01:20.742377629Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys

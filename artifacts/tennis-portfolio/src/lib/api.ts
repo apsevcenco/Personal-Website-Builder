@@ -1,7 +1,7 @@
 import type { SiteContent } from "@/data/defaultContent";
 import type { Locale } from "@/i18n/uiStrings";
 
-const API_BASE = "/api";
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "/api").replace(/\/$/, "");
 
 export type LocalizedContent = Record<Locale, SiteContent>;
 

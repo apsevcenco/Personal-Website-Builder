@@ -39,10 +39,12 @@ router.post("/admin/login", (req: Request, res: Response) => {
     return;
   }
   const token = createAdminToken();
+  const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https";
+  const crossSite = process.env["CROSS_SITE_COOKIES"] === "true";
   res.cookie(ADMIN_COOKIE_NAME, token, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: req.secure || req.headers["x-forwarded-proto"] === "https",
+    sameSite: crossSite ? "none" : "lax",
+    secure: crossSite ? true : isHttps,
     maxAge: ADMIN_TTL_MS,
     path: "/",
   });
@@ -50,7 +52,12 @@ router.post("/admin/login", (req: Request, res: Response) => {
 });
 
 router.post("/admin/logout", (_req: Request, res: Response) => {
-  res.clearCookie(ADMIN_COOKIE_NAME, { path: "/" });
+  const crossSite = process.env["CROSS_SITE_COOKIES"] === "true";
+  res.clearCookie(ADMIN_COOKIE_NAME, {
+    path: "/",
+    sameSite: crossSite ? "none" : "lax",
+    secure: crossSite ? true : undefined,
+  });
   res.json({ ok: true });
 });
 
