@@ -60,14 +60,20 @@ async function buildPoolConfig(connectionString: string): Promise<pg.PoolConfig>
   const params = url.searchParams;
 
   let host = originalHost;
+  let lookupNote = "skipped (local or IP)";
   if (!isIp(originalHost) && !isLocalHost(originalHost)) {
     try {
       const { address } = await dns.promises.lookup(originalHost, { family: 4 });
       host = address;
-    } catch {
-      // fall back to hostname; pg will try its own resolution
+      lookupNote = `ipv4=${address}`;
+    } catch (err) {
+      lookupNote = `IPv4 lookup FAILED for ${originalHost}: ${(err as Error).message}. ` +
+        `This host has no A record (likely Supabase direct connection, IPv6-only). ` +
+        `Use the Supabase POOLER hostname (aws-0-<region>.pooler.supabase.com) instead.`;
     }
   }
+  // eslint-disable-next-line no-console
+  console.log(`[db] connecting to host=${originalHost} port=${port} db=${database} ssl=${shouldForceSsl(originalHost, params)} resolution=${lookupNote}`);
 
   const config: pg.PoolConfig = {
     host,
