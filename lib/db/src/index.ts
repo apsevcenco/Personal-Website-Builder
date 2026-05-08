@@ -3,21 +3,9 @@ import pg from "pg";
 import dns from "dns";
 import * as schema from "./schema";
 
-// Prefer IPv4 DNS resolution. Some hosts (e.g. Render Free) don't have
-// outbound IPv6, but Supabase/AWS often resolve to AAAA first.
+// Prefer IPv4 globally. Some hosts (e.g. Render Free) don't have outbound
+// IPv6, but Supabase/AWS often resolve AAAA first.
 dns.setDefaultResultOrder("ipv4first");
-
-// Custom DNS lookup that forces IPv4 (family: 4). Belt-and-suspenders
-// alongside setDefaultResultOrder, since some pg/net code paths bypass
-// the default order.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ipv4Lookup = (hostname: string, options: any, callback?: any): void => {
-  if (typeof options === "function") {
-    dns.lookup(hostname, { family: 4 }, options);
-    return;
-  }
-  dns.lookup(hostname, { ...(options ?? {}), family: 4 }, callback);
-};
 
 const { Pool } = pg;
 
@@ -27,28 +15,64 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-function shouldUseSsl(connectionString: string): boolean {
-  if (process.env.DATABASE_SSL === "false") return false;
-  if (process.env.DATABASE_SSL === "true") return true;
-  // Auto-enable SSL for non-local hosts (Supabase, Neon, Render, etc.)
-  try {
-    const url = new URL(connectionString);
-    const host = url.hostname;
-    if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".internal")) {
-      return false;
-    }
-    return true;
-  } catch {
-    return false;
-  }
+function isLocalHost(host: string): boolean {
+  return (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host === "::1" ||
+    !host.includes(".") || // single-word hostnames (e.g. Replit's "helium")
+    host.endsWith(".internal") ||
+    host.endsWith(".replit.dev") ||
+    host.startsWith("10.") ||
+    host.startsWith("172.") ||
+    host.startsWith("192.168.")
+  );
 }
 
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: shouldUseSsl(process.env.DATABASE_URL) ? { rejectUnauthorized: false } : undefined,
-  // @ts-expect-error pg types don't expose `lookup`, but it's forwarded to net.connect
-  lookup: ipv4Lookup,
-});
+function isIp(host: string): boolean {
+  return /^[0-9.]+$/.test(host) || host.includes(":");
+}
+
+function shouldForceSsl(host: string, urlParams: URLSearchParams): boolean {
+  if (process.env.DATABASE_SSL === "false") return false;
+  if (process.env.DATABASE_SSL === "true") return true;
+  // Honour `sslmode` from URL if provided
+  const sslmode = urlParams.get("sslmode");
+  if (sslmode === "disable") return false;
+  if (sslmode && sslmode !== "disable") return true;
+  // Default: SSL for non-local hosts only
+  return !isLocalHost(host);
+}
+
+// Build pool config. We pass `connectionString` so pg keeps its native URL
+// parsing (sslmode, options, etc.), AND override `host` with a resolved
+// IPv4 address for non-local hostnames. This bypasses any IPv6 resolution
+// in pg/net (Render Free has no outbound IPv6, but Supabase resolves AAAA).
+async function buildPoolConfig(connectionString: string): Promise<pg.PoolConfig> {
+  const url = new URL(connectionString);
+  const originalHost = decodeURIComponent(url.hostname);
+  const params = url.searchParams;
+
+  const config: pg.PoolConfig = { connectionString };
+
+  if (!isIp(originalHost) && !isLocalHost(originalHost)) {
+    try {
+      const { address } = await dns.promises.lookup(originalHost, { family: 4 });
+      config.host = address;
+    } catch {
+      // fall back to hostname; pg will try its own resolution
+    }
+  }
+
+  if (shouldForceSsl(originalHost, params)) {
+    config.ssl = { rejectUnauthorized: false, servername: originalHost };
+  }
+
+  return config;
+}
+
+const config = await buildPoolConfig(process.env.DATABASE_URL);
+export const pool = new Pool(config);
 export const db = drizzle(pool, { schema });
 
 export * from "./schema";
