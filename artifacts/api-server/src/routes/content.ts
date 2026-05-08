@@ -101,11 +101,25 @@ function pickLocale(req: Request): Locale {
 
 // ---------- Public ----------
 
+function mergeMediaFromSource(target: SiteContent, source: SiteContent): SiteContent {
+  const mergedImages = {
+    hero: target.images?.hero || source.images?.hero || "",
+    profile: target.images?.profile || source.images?.profile || "",
+  };
+  const mergedGallery = target.gallery.map((g, i) => ({
+    ...g,
+    image: g.image || source.gallery[i]?.image || "",
+  }));
+  return { ...target, images: mergedImages, gallery: mergedGallery };
+}
+
 router.get("/content", async (req: Request, res: Response) => {
   try {
     const all = await loadAll();
     const locale = pickLocale(req);
-    const single: SiteContent = all[locale] ?? all[SOURCE_LOCALE];
+    const base: SiteContent = all[locale] ?? all[SOURCE_LOCALE];
+    const single: SiteContent =
+      locale === SOURCE_LOCALE ? base : mergeMediaFromSource(base, all[SOURCE_LOCALE]);
     res.set("Cache-Control", "no-store");
     res.json(single);
   } catch (err) {
