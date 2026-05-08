@@ -22,7 +22,7 @@ export function Hero() {
           src={heroSrc}
           alt={playerData.name}
           className="md:hidden absolute inset-0 w-full h-full object-cover animate-ken-burns origin-center"
-          style={{ objectPosition: "50% 25%" }}
+          style={{ objectPosition: "50% 25%", filter: "grayscale(0.85) contrast(1.05) brightness(0.9)" }}
         />
         {/* Desktop: image anchored to the right half so portrait photos aren't cropped */}
         <img
@@ -30,7 +30,7 @@ export function Hero() {
           alt=""
           aria-hidden="true"
           className="hidden md:block absolute top-0 right-0 h-full w-[55%] lg:w-[50%] object-cover animate-ken-burns origin-center"
-          style={{ objectPosition: "50% 30%" }}
+          style={{ objectPosition: "50% 30%", filter: "grayscale(0.85) contrast(1.05) brightness(0.9)" }}
         />
         {/* Mobile overlays */}
         <div className="md:hidden absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background z-10" />
